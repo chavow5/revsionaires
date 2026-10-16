@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revisión de aire acondicionado</title>
+<style>
+:root{--bg:#eaf2f6;--card:#fff;--ink:#10252f;--mute:#566f7c;--line:#c5d6de;--acc:#0b6e8a;--accink:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1a21;--card:#14262f;--ink:#e6f1f5;--mute:#8fa9b5;--line:#27414d;--acc:#4cc3e0;--accink:#06222b;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 12px}
+h2{font-size:16px;margin:26px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
+.plate{display:flex;align-items:center;justify-content:center;padding:12px 8px;border:3px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);font:700 36px/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em}
+.plate input{width:4.2ch;min-width:0;margin:0;padding:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;letter-spacing:inherit}
+.plate:focus-within{outline:3px solid var(--acc);outline-offset:2px}
+.hint{color:var(--mute);font-size:14px;margin:6px 0 0}
+label.f{display:block;margin:10px 0 0;color:var(--mute);font-size:14px}
+input[type=text],input[type=date],textarea{display:block;width:100%;margin-top:4px;padding:12px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px}
+textarea{min-height:76px;resize:vertical}
+.seg{display:flex;gap:6px}
+.seg label{position:relative;flex:1 1 0;min-width:0}
+.seg input{position:absolute;opacity:0;inset:0}
+.seg span{display:block;text-align:center;padding:12px 4px;border:2px solid var(--line);border-radius:10px;background:var(--card);font-weight:600}
+.seg input:checked+span{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.seg input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.ck{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ck .seg{flex:0 0 165px}
+.ck .seg span{padding:9px 2px}
+#th{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#th img{width:76px;height:76px;object-fit:cover;border-radius:8px;border:2px solid var(--line)}
+button{width:100%;padding:16px;font:700 18px system-ui,sans-serif;border-radius:12px;border:2px solid var(--acc);cursor:pointer}
+.go{background:var(--acc);color:var(--accink);margin-top:24px}
+.alt{background:transparent;color:var(--ink);border-color:var(--line);margin-top:10px;font-size:16px}
+.file{display:block;text-align:center;padding:14px;border:2px dashed var(--mute);border-radius:10px;font-weight:600}
+#msg{min-height:22px;margin:12px 0 0;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Revisión de aire acondicionado</h1>
+<div class="plate"><span>EL-SF-</span><input id="id" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="001" autocomplete="off" aria-label="Número del sticker"></div>
+<p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
+
+<h2>Ubicación</h2>
+<div class="seg" id="sector"></div>
+<label class="f">Aula o lugar<input id="ubi" type="text" placeholder="Ej.: aula 3, dirección"></label>
+<label class="f">Técnico<input id="tec" type="text"></label>
+<label class="f">Fecha<input id="fec" type="date"></label>
+
+<h2>Estado general</h2>
+<div class="seg" id="estado"></div>
+
+<h2>Control</h2>
+<div id="chk"></div>
+
+<h2>Diagnóstico</h2>
+<label class="f">Falla detectada<textarea id="falla"></textarea></label>
+<label class="f">Trabajo pendiente y repuestos<textarea id="pend"></textarea></label>
+<label class="f" style="margin-bottom:6px">Prioridad</label>
+<div class="seg" id="prio"></div>
+<label class="f">Observaciones<textarea id="obs"></textarea></label>
+
+<h2>Fotos</h2>
+<label class="file">Sacar o elegir fotos<input id="fotos" type="file" accept="image/*" multiple hidden></label>
+<div id="th"></div>
+<p class="hint">Hasta 6 fotos. Tocá una para quitarla.</p>
+
+<button class="go" id="go" type="button">Generar PDF y compartir</button>
+<button class="alt" id="clr" type="button">Empezar otro aire</button>
+<p id="msg" role="status"></p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const SHEET_URL = ""; // opcional: URL del Apps Script que guarda cada revisión en Google Sheets
+const ITEMS = ["Enciende","Enfría o calefacciona","Ruidos anormales","Pérdida de gas","Filtros sucios","Desagote obstruido","Control remoto funciona","Placa o display funciona","Unidad exterior en buen estado"];
+const $ = s => document.querySelector(s);
+let photos = [];
+
+function seg(box, name, opts){
+  $(box).innerHTML = opts.map(o => `<label><input type="radio" name="${name}" value="${o}"><span>${o}</span></label>`).join("");
+}
+seg("#sector","sector",["Primaria","Secundaria","Jardín"]);
+seg("#estado","estado",["Funciona","Con fallas","No funciona"]);
+seg("#prio","prio",["Urgente","Normal","Puede esperar"]);
+$("#chk").innerHTML = ITEMS.map((t,i) => `<div class="ck"><span>${t}</span><div class="seg">${["Sí","No","N/A"].map(o=>`<label><input type="radio" name="c${i}" value="${o}"><span>${o}</span></label>`).join("")}</div></div>`).join("");
+
+const val = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value || "—";
+const check = (n, v) => { const e = document.querySelector(`input[name="${n}"][value="${v}"]`); if (e) e.checked = true; };
+const today = () => new Date().toLocaleDateString("sv-SE");
+
+// Valores iniciales: parámetros del QR (?id=EL-SF-12&sector=Jardín) y último técnico usado
+const q = new URLSearchParams(location.search);
+const pad = v => v.replace(/\D/g, "").slice(-3).padStart(3, "0");
+$("#id").value = q.get("id") ? pad(q.get("id")) : "";
+$("#id").oninput = e => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3); };
+$("#id").onblur = e => { if (e.target.value) e.target.value = pad(e.target.value); };
+if (q.get("sector")) check("sector", q.get("sector"));
+$("#fec").value = today();
+try { $("#tec").value = localStorage.getItem("tec") || ""; } catch (e) {}
+$("#tec").onchange = () => { try { localStorage.setItem("tec", $("#tec").value); } catch (e) {} };
+
+function shrink(f){
+  return new Promise(res => {
+    const i = new Image();
+    i.onload = () => {
+      const k = Math.min(1, 1000 / Math.max(i.width, i.height)), c = document.createElement("canvas");
+      c.width = i.width * k; c.height = i.height * k;
+      c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
+      res({ url: c.toDataURL("image/jpeg", .7), w: c.width, h: c.height });
+      URL.revokeObjectURL(i.src);
+    };
+    i.src = URL.createObjectURL(f);
+  });
+}
+function thumbs(){
+  $("#th").innerHTML = "";
+  photos.forEach((p, n) => {
+    const im = document.createElement("img");
+    im.src = p.url; im.alt = "Foto " + (n + 1);
+    im.onclick = () => { photos.splice(n, 1); thumbs(); };
+    $("#th").appendChild(im);
+  });
+}
+$("#fotos").onchange = async e => {
+  for (const f of e.target.files) { if (photos.length >= 6) break; photos.push(await shrink(f)); }
+  e.target.value = ""; thumbs();
+};
+
+function collect(){
+  return {
+    id: $("#id").value ? "EL-SF-" + pad($("#id").value) : "", sector: val("sector"), ubicacion: $("#ubi").value.trim(),
+    tecnico: $("#tec").value.trim(), fecha: $("#fec").value || today(), estado: val("estado"),
+    items: ITEMS.map((t, i) => [t, val("c" + i)]), falla: $("#falla").value.trim(),
+    pendiente: $("#pend").value.trim(), prioridad: val("prio"), obs: $("#obs").value.trim(), photos
+  };
+}
+
+function buildPdf(d){
+  const p = new window.jspdf.jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 14;
+  let y = 40;
+  const fecha = d.fecha.split("-").reverse().join("/");
+  p.setFillColor(11, 110, 138); p.rect(0, 0, W, 30, "F");
+  p.setTextColor(255); p.setFont("helvetica", "bold"); p.setFontSize(26); p.text(d.id, M, 19);
+  p.setFont("helvetica", "normal"); p.setFontSize(10);
+  p.text("Revisión de aire acondicionado", W - M, 12, { align: "right" });
+  p.text(fecha, W - M, 19, { align: "right" });
+  p.setTextColor(20);
+  const need = h => { if (y + h > 285) { p.addPage(); y = M; } };
+  const head = t => {
+    need(14); y += 3; p.setFont("helvetica", "bold"); p.setFontSize(12); p.text(t, M, y);
+    y += 2; p.setDrawColor(11, 110, 138); p.line(M, y, W - M, y); y += 6;
+  };
+  const row = (k, v) => {
+    const t = p.splitTextToSize(String(v || "—"), W - M * 2 - 62);
+    need(t.length * 5 + 2);
+    p.setFont("helvetica", "bold"); p.setFontSize(10); p.text(k, M, y);
+    p.setFont("helvetica", "normal"); p.text(t, M + 62, y); y += t.length * 5 + 1.5;
+  };
+  head("Datos");
+  row("Sector", d.sector); row("Ubicación", d.ubicacion); row("Técnico", d.tecnico); row("Estado general", d.estado);
+  head("Control");
+  d.items.forEach(([k, v]) => row(k, v));
+  head("Diagnóstico");
+  row("Falla detectada", d.falla); row("Trabajo pendiente", d.pendiente); row("Prioridad", d.prioridad); row("Observaciones", d.obs);
+  if (d.photos.length) {
+    head("Fotos");
+    d.photos.forEach(ph => {
+      let w = 90, h = w * ph.h / ph.w;
+      if (h > 80) { h = 80; w = h * ph.w / ph.h; }
+      need(h + 4); p.addImage(ph.url, "JPEG", M, y, w, h); y += h + 4;
+    });
+  }
+  return p.output("blob");
+}
+
+function save(file){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(file); a.download = file.name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+$("#go").onclick = async () => {
+  const d = collect(), msg = $("#msg");
+  if (!d.id) { msg.textContent = "Falta el número del sticker."; $("#id").focus(); return; }
+  if (!window.jspdf) { msg.textContent = "No cargó el generador de PDF. Revisá la conexión y recargá la página."; return; }
+  msg.textContent = "Generando PDF…";
+  const name = d.id.replace(/[^A-Z0-9_-]/g, "-") + "_" + d.fecha + ".pdf";
+  const file = new File([buildPdf(d)], name, { type: "application/pdf" });
+  if (SHEET_URL) fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...d, photos: d.photos.length }) }).catch(() => {});
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: d.id, text: "Revisión " + d.id }); msg.textContent = "Listo: " + name; }
+    catch (e) { if (e.name !== "AbortError") { save(file); msg.textContent = "Se descargó " + name; } else msg.textContent = "Envío cancelado. Podés volver a tocar el botón."; }
+  } else { save(file); msg.textContent = "Se descargó " + name + ". Adjuntalo en el grupo de WhatsApp."; }
+};
+
+$("#clr").onclick = () => {
+  ["#id","#ubi","#falla","#pend","#obs"].forEach(s => $(s).value = "");
+  document.querySelectorAll('input[type=radio]').forEach(r => { if (r.name !== "sector") r.checked = false; });
+  photos = []; thumbs(); $("#msg").textContent = ""; $("#fec").value = today(); $("#id").focus();
+};
+</script>
+</body>
+</html>
