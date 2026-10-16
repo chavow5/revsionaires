@@ -1,0 +1,8 @@
+{
+  "name": "revsionaires",
+  "version": "1.0.0",
+  "description": "Revisión de aire acondicionado",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
