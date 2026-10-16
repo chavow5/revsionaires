@@ -5,201 +5,645 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Revisión de aire acondicionado</title>
 <style>
-:root{--bg:#eaf2f6;--card:#fff;--ink:#10252f;--mute:#566f7c;--line:#c5d6de;--acc:#0b6e8a;--accink:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root{--bg:#0d1a21;--card:#14262f;--ink:#e6f1f5;--mute:#8fa9b5;--line:#27414d;--acc:#4cc3e0;--accink:#06222b;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:560px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:0 0 12px}
-h2{font-size:16px;margin:26px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
-.plate{display:flex;align-items:center;justify-content:center;padding:12px 8px;border:3px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);font:700 36px/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em}
-.plate input{width:4.2ch;min-width:0;margin:0;padding:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;letter-spacing:inherit}
-.plate:focus-within{outline:3px solid var(--acc);outline-offset:2px}
-.hint{color:var(--mute);font-size:14px;margin:6px 0 0}
-label.f{display:block;margin:10px 0 0;color:var(--mute);font-size:14px}
-input[type=text],input[type=date],textarea{display:block;width:100%;margin-top:4px;padding:12px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px}
-textarea{min-height:76px;resize:vertical}
-.seg{display:flex;gap:6px}
-.seg label{position:relative;flex:1 1 0;min-width:0}
-.seg input{position:absolute;opacity:0;inset:0}
-.seg span{display:block;text-align:center;padding:12px 4px;border:2px solid var(--line);border-radius:10px;background:var(--card);font-weight:600}
-.seg input:checked+span{background:var(--acc);color:var(--accink);border-color:var(--acc)}
-.seg input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
-.ck{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-.ck .seg{flex:0 0 165px}
-.ck .seg span{padding:9px 2px}
-#th{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-#th img{width:76px;height:76px;object-fit:cover;border-radius:8px;border:2px solid var(--line)}
-button{width:100%;padding:16px;font:700 18px system-ui,sans-serif;border-radius:12px;border:2px solid var(--acc);cursor:pointer}
-.go{background:var(--acc);color:var(--accink);margin-top:24px}
-.alt{background:transparent;color:var(--ink);border-color:var(--line);margin-top:10px;font-size:16px}
-.file{display:block;text-align:center;padding:14px;border:2px dashed var(--mute);border-radius:10px;font-weight:600}
-#msg{min-height:22px;margin:12px 0 0;font-weight:600}
+:root {
+  --bg: #0d1a21;
+  --card: #14262f;
+  --ink: #e6f1f5;
+  --mute: #8fa9b5;
+  --line: #27414d;
+  --acc: #4cc3e0;
+  --accink: #06222b;
+  --err: #ff6b6b;
+  color-scheme: dark;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 18px 16px 36px;
+}
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 24px 0 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+}
+
+/* Placa del Sticker */
+.plate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.plate-prefix {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  font: 700 24px/1.1 ui-monospace, Menlo, Consolas, monospace;
+  color: var(--ink);
+  letter-spacing: .08em;
+  user-select: none;
+}
+.plate-input-box {
+  flex: 1;
+  max-width: 140px;
+}
+.plate input {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border: 2px solid var(--line) !important;
+  border-radius: 8px !important;
+  background: var(--bg) !important;
+  color: var(--acc) !important;
+  font: 700 32px/1 ui-monospace, Menlo, Consolas, monospace !important;
+  letter-spacing: .08em;
+  text-align: center;
+  outline: none;
+  box-shadow: none;
+}
+.plate input:focus {
+  border-color: var(--acc) !important;
+  box-shadow: 0 0 0 2px rgba(76, 195, 224, 0.25) !important;
+}
+.plate input::placeholder {
+  color: var(--mute);
+  opacity: 0.5;
+}
+
+.hint {
+  color: var(--mute);
+  font-size: 13px;
+  margin: 8px 2px 0;
+}
+label.f {
+  display: block;
+  margin: 12px 0 0;
+  color: var(--mute);
+  font-size: 14px;
+}
+input[type=text], input[type=date], textarea {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding: 12px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .15s ease;
+}
+input[type=text]:focus, input[type=date]:focus, textarea:focus {
+  border-color: var(--acc);
+}
+textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+/* Botones segmentados */
+.seg {
+  display: flex;
+  gap: 6px;
+}
+.seg label {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  cursor: pointer;
+}
+.seg input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+}
+.seg span {
+  display: block;
+  text-align: center;
+  padding: 12px 4px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  transition: all .15s ease;
+  user-select: none;
+}
+.seg input:checked + span {
+  background: var(--acc);
+  color: var(--accink);
+  border-color: var(--acc);
+}
+.seg input:focus-visible + span {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+/* Filas de Checklist */
+.ck {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.ck > span {
+  font-size: 14px;
+  color: var(--ink);
+}
+.ck .seg {
+  flex: 0 0 160px;
+  gap: 4px;
+}
+.ck .seg span {
+  padding: 8px 2px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* Fotos */
+.file {
+  display: block;
+  text-align: center;
+  padding: 15px;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--card);
+  color: var(--ink);
+  transition: border-color .15s ease;
+}
+.file:active, .file:hover {
+  border-color: var(--acc);
+}
+#th {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+#th img {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--line);
+  cursor: pointer;
+  transition: opacity .15s ease;
+}
+#th img:hover {
+  opacity: 0.7;
+}
+
+/* Botones principales */
+button {
+  width: 100%;
+  padding: 16px;
+  font: 700 17px system-ui, sans-serif;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform .05s ease, filter .15s ease;
+}
+button:active {
+  transform: scale(0.99);
+}
+.go {
+  background: var(--acc);
+  color: var(--accink);
+  border-color: var(--acc);
+  margin-top: 24px;
+}
+.go:hover {
+  filter: brightness(1.08);
+}
+.alt {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+  margin-top: 12px;
+  font-size: 15px;
+  padding: 13px;
+}
+.alt:hover {
+  border-color: var(--mute);
+}
+#msg {
+  min-height: 24px;
+  margin: 14px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
 <main>
-<h1>Revisión de aire acondicionado</h1>
-<div class="plate"><span>EL-SF-</span><input id="id" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="001" autocomplete="off" aria-label="Número del sticker"></div>
-<p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
+  <h1>Revisión de aire acondicionado</h1>
 
-<h2>Ubicación</h2>
-<div class="seg" id="sector"></div>
-<label class="f">Aula o lugar<input id="ubi" type="text" placeholder="Ej.: aula 3, dirección"></label>
-<label class="f">Técnico<input id="tec" type="text"></label>
-<label class="f">Fecha<input id="fec" type="date"></label>
+  <div class="plate">
+    <div class="plate-prefix">
+      <span>EL -</span>
+      <span>SF -</span>
+    </div>
+    <div class="plate-input-box">
+      <input id="id" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="001" autocomplete="off" aria-label="Número del sticker">
+    </div>
+  </div>
+  <p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
 
-<h2>Estado general</h2>
-<div class="seg" id="estado"></div>
+  <h2>Ubicación</h2>
+  <div class="seg" id="sector"></div>
+  <label class="f">Aula o lugar<input id="ubi" type="text" placeholder="Ej.: aula 3, dirección"></label>
+  <label class="f">Técnico<input id="tec" type="text" placeholder="Nombre del técnico"></label>
+  <label class="f">Fecha<input id="fec" type="date"></label>
 
-<h2>Control</h2>
-<div id="chk"></div>
+  <h2>Estado general</h2>
+  <div class="seg" id="estado"></div>
 
-<h2>Diagnóstico</h2>
-<label class="f">Falla detectada<textarea id="falla"></textarea></label>
-<label class="f">Trabajo pendiente y repuestos<textarea id="pend"></textarea></label>
-<label class="f" style="margin-bottom:6px">Prioridad</label>
-<div class="seg" id="prio"></div>
-<label class="f">Observaciones<textarea id="obs"></textarea></label>
+  <h2>Control</h2>
+  <div id="chk"></div>
 
-<h2>Fotos</h2>
-<label class="file">Sacar o elegir fotos<input id="fotos" type="file" accept="image/*" multiple hidden></label>
-<div id="th"></div>
-<p class="hint">Hasta 6 fotos. Tocá una para quitarla.</p>
+  <h2>Diagnóstico</h2>
+  <label class="f">Falla detectada<textarea id="falla" placeholder="Descripción de la falla (opcional)"></textarea></label>
+  <label class="f">Trabajo pendiente y repuestos<textarea id="pend" placeholder="Repuestos necesarios o tareas pendientes"></textarea></label>
+  <label class="f" style="margin-bottom:6px">Prioridad</label>
+  <div class="seg" id="prio"></div>
+  <label class="f">Observaciones<textarea id="obs" placeholder="Observaciones adicionales"></textarea></label>
 
-<button class="go" id="go" type="button">Generar PDF y compartir</button>
-<button class="alt" id="clr" type="button">Empezar otro aire</button>
-<p id="msg" role="status"></p>
+  <h2>Fotos</h2>
+  <label class="file">Sacar o elegir fotos<input id="fotos" type="file" accept="image/*" multiple hidden></label>
+  <div id="th"></div>
+  <p class="hint">Hasta 6 fotos. Tocá una para quitarla.</p>
+
+  <button class="go" id="go" type="button">Generar PDF y compartir</button>
+  <button class="alt" id="clr" type="button">Empezar otro aire</button>
+  <p id="msg" role="status"></p>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- jsPDF local y fallback a CDN -->
+<script src="jspdf.umd.min.js"></script>
 <script>
-const SHEET_URL = ""; // opcional: URL del Apps Script que guarda cada revisión en Google Sheets
-const ITEMS = ["Enciende","Enfría o calefacciona","Ruidos anormales","Pérdida de gas","Filtros sucios","Desagote obstruido","Control remoto funciona","Placa o display funciona","Unidad exterior en buen estado"];
+  if (!window.jspdf) {
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    document.head.appendChild(s);
+  }
+</script>
+
+<script>
+const SHEET_URL = ""; // Opcional: URL del Apps Script de Google Sheets
+const ITEMS = [
+  "Enciende",
+  "Enfría o calefacciona",
+  "Ruidos anormales",
+  "Pérdida de gas",
+  "Filtros sucios",
+  "Desagote obstruido",
+  "Control remoto funciona",
+  "Placa o display funciona",
+  "Unidad exterior en buen estado"
+];
+
 const $ = s => document.querySelector(s);
 let photos = [];
 
-function seg(box, name, opts){
+function seg(box, name, opts) {
   $(box).innerHTML = opts.map(o => `<label><input type="radio" name="${name}" value="${o}"><span>${o}</span></label>`).join("");
 }
-seg("#sector","sector",["Primaria","Secundaria","Jardín"]);
-seg("#estado","estado",["Funciona","Con fallas","No funciona"]);
-seg("#prio","prio",["Urgente","Normal","Puede esperar"]);
-$("#chk").innerHTML = ITEMS.map((t,i) => `<div class="ck"><span>${t}</span><div class="seg">${["Sí","No","N/A"].map(o=>`<label><input type="radio" name="c${i}" value="${o}"><span>${o}</span></label>`).join("")}</div></div>`).join("");
+
+seg("#sector", "sector", ["Primaria", "Secundaria", "Jardín"]);
+seg("#estado", "estado", ["Funciona", "Con fallas", "No funciona"]);
+seg("#prio", "prio", ["Urgente", "Normal", "Puede esperar"]);
+
+$("#chk").innerHTML = ITEMS.map((t, i) => `
+  <div class="ck">
+    <span>${t}</span>
+    <div class="seg">
+      ${["Si", "No", "N/A"].map(o => `<label><input type="radio" name="c${i}" value="${o}"><span>${o}</span></label>`).join("")}
+    </div>
+  </div>
+`).join("");
 
 const val = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value || "—";
-const check = (n, v) => { const e = document.querySelector(`input[name="${n}"][value="${v}"]`); if (e) e.checked = true; };
+const check = (n, v) => {
+  const e = document.querySelector(`input[name="${n}"][value="${v}"]`);
+  if (e) e.checked = true;
+};
 const today = () => new Date().toLocaleDateString("sv-SE");
 
-// Valores iniciales: parámetros del QR (?id=EL-SF-12&sector=Jardín) y último técnico usado
+// Prellenar parámetros del QR (?id=EL-SF-012 o ?id=12 & sector=Jardín)
 const q = new URLSearchParams(location.search);
 const pad = v => v.replace(/\D/g, "").slice(-3).padStart(3, "0");
-$("#id").value = q.get("id") ? pad(q.get("id")) : "";
-$("#id").oninput = e => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3); };
-$("#id").onblur = e => { if (e.target.value) e.target.value = pad(e.target.value); };
+
+if (q.get("id")) {
+  $("#id").value = pad(q.get("id"));
+}
+$("#id").oninput = e => {
+  e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
+};
+$("#id").onblur = e => {
+  if (e.target.value) e.target.value = pad(e.target.value);
+};
+
 if (q.get("sector")) check("sector", q.get("sector"));
 $("#fec").value = today();
-try { $("#tec").value = localStorage.getItem("tec") || ""; } catch (e) {}
-$("#tec").onchange = () => { try { localStorage.setItem("tec", $("#tec").value); } catch (e) {} };
 
-function shrink(f){
+try {
+  $("#tec").value = localStorage.getItem("tec") || "";
+} catch (e) {}
+
+$("#tec").onchange = () => {
+  try {
+    localStorage.setItem("tec", $("#tec").value);
+  } catch (e) {}
+};
+
+function shrink(f) {
   return new Promise(res => {
     const i = new Image();
     i.onload = () => {
-      const k = Math.min(1, 1000 / Math.max(i.width, i.height)), c = document.createElement("canvas");
-      c.width = i.width * k; c.height = i.height * k;
+      const k = Math.min(1, 1000 / Math.max(i.width, i.height));
+      const c = document.createElement("canvas");
+      c.width = i.width * k;
+      c.height = i.height * k;
       c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
-      res({ url: c.toDataURL("image/jpeg", .7), w: c.width, h: c.height });
+      res({ url: c.toDataURL("image/jpeg", 0.75), w: c.width, h: c.height });
       URL.revokeObjectURL(i.src);
+    };
+    i.onerror = () => {
+      URL.revokeObjectURL(i.src);
+      res(null);
     };
     i.src = URL.createObjectURL(f);
   });
 }
-function thumbs(){
+
+function thumbs() {
   $("#th").innerHTML = "";
   photos.forEach((p, n) => {
     const im = document.createElement("img");
-    im.src = p.url; im.alt = "Foto " + (n + 1);
-    im.onclick = () => { photos.splice(n, 1); thumbs(); };
+    im.src = p.url;
+    im.alt = "Foto " + (n + 1);
+    im.title = "Tocar para quitar";
+    im.onclick = () => {
+      photos.splice(n, 1);
+      thumbs();
+    };
     $("#th").appendChild(im);
   });
 }
+
 $("#fotos").onchange = async e => {
-  for (const f of e.target.files) { if (photos.length >= 6) break; photos.push(await shrink(f)); }
-  e.target.value = ""; thumbs();
+  for (const f of e.target.files) {
+    if (photos.length >= 6) break;
+    const imgData = await shrink(f);
+    if (imgData) photos.push(imgData);
+  }
+  e.target.value = "";
+  thumbs();
 };
 
-function collect(){
+function collect() {
   return {
-    id: $("#id").value ? "EL-SF-" + pad($("#id").value) : "", sector: val("sector"), ubicacion: $("#ubi").value.trim(),
-    tecnico: $("#tec").value.trim(), fecha: $("#fec").value || today(), estado: val("estado"),
-    items: ITEMS.map((t, i) => [t, val("c" + i)]), falla: $("#falla").value.trim(),
-    pendiente: $("#pend").value.trim(), prioridad: val("prio"), obs: $("#obs").value.trim(), photos
+    id: $("#id").value ? "EL-SF-" + pad($("#id").value) : "",
+    sector: val("sector"),
+    ubicacion: $("#ubi").value.trim(),
+    tecnico: $("#tec").value.trim(),
+    fecha: $("#fec").value || today(),
+    estado: val("estado"),
+    items: ITEMS.map((t, i) => [t, val("c" + i)]),
+    falla: $("#falla").value.trim(),
+    pendiente: $("#pend").value.trim(),
+    prioridad: val("prio"),
+    obs: $("#obs").value.trim(),
+    photos
   };
 }
 
-function buildPdf(d){
-  const p = new window.jspdf.jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 14;
-  let y = 40;
-  const fecha = d.fecha.split("-").reverse().join("/");
-  p.setFillColor(11, 110, 138); p.rect(0, 0, W, 30, "F");
-  p.setTextColor(255); p.setFont("helvetica", "bold"); p.setFontSize(26); p.text(d.id, M, 19);
-  p.setFont("helvetica", "normal"); p.setFontSize(10);
+function buildPdf(d) {
+  const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  const p = new jsPDFClass({ unit: "mm", format: "a4" });
+  const W = 210, M = 14;
+  let y = 38;
+  const fecha = d.fecha ? d.fecha.split("-").reverse().join("/") : new Date().toLocaleDateString("es-AR");
+
+  // Encabezado
+  p.setFillColor(11, 110, 138);
+  p.rect(0, 0, W, 28, "F");
+  p.setTextColor(255, 255, 255);
+  p.setFont("helvetica", "bold");
+  p.setFontSize(22);
+  p.text(d.id || "SIN NÚMERO", M, 18);
+
+  p.setFont("helvetica", "normal");
+  p.setFontSize(10);
   p.text("Revisión de aire acondicionado", W - M, 12, { align: "right" });
-  p.text(fecha, W - M, 19, { align: "right" });
-  p.setTextColor(20);
-  const need = h => { if (y + h > 285) { p.addPage(); y = M; } };
+  p.text(fecha, W - M, 18, { align: "right" });
+
+  p.setTextColor(20, 30, 40);
+
+  const need = h => {
+    if (y + h > 280) {
+      p.addPage();
+      y = M + 4;
+    }
+  };
+
   const head = t => {
-    need(14); y += 3; p.setFont("helvetica", "bold"); p.setFontSize(12); p.text(t, M, y);
-    y += 2; p.setDrawColor(11, 110, 138); p.line(M, y, W - M, y); y += 6;
+    need(14);
+    y += 4;
+    p.setFont("helvetica", "bold");
+    p.setFontSize(11);
+    p.setTextColor(11, 110, 138);
+    p.text(t, M, y);
+    y += 2;
+    p.setDrawColor(11, 110, 138);
+    p.setLineWidth(0.5);
+    p.line(M, y, W - M, y);
+    y += 5;
+    p.setTextColor(30, 40, 50);
   };
+
   const row = (k, v) => {
-    const t = p.splitTextToSize(String(v || "—"), W - M * 2 - 62);
+    const valStr = String(v || "—");
+    const t = p.splitTextToSize(valStr, W - M * 2 - 65);
     need(t.length * 5 + 2);
-    p.setFont("helvetica", "bold"); p.setFontSize(10); p.text(k, M, y);
-    p.setFont("helvetica", "normal"); p.text(t, M + 62, y); y += t.length * 5 + 1.5;
+    p.setFont("helvetica", "bold");
+    p.setFontSize(9.5);
+    p.text(k, M, y);
+    p.setFont("helvetica", "normal");
+    p.text(t, M + 65, y);
+    y += t.length * 5 + 1.5;
   };
-  head("Datos");
-  row("Sector", d.sector); row("Ubicación", d.ubicacion); row("Técnico", d.tecnico); row("Estado general", d.estado);
-  head("Control");
+
+  head("Datos del Equipo");
+  row("Sector", d.sector);
+  row("Ubicación / Aula", d.ubicacion);
+  row("Técnico", d.tecnico);
+  row("Estado general", d.estado);
+
+  head("Control y Funcionamiento");
   d.items.forEach(([k, v]) => row(k, v));
-  head("Diagnóstico");
-  row("Falla detectada", d.falla); row("Trabajo pendiente", d.pendiente); row("Prioridad", d.prioridad); row("Observaciones", d.obs);
-  if (d.photos.length) {
-    head("Fotos");
+
+  head("Diagnóstico y Tareas");
+  row("Falla detectada", d.falla);
+  row("Trabajo pendiente y repuestos", d.pendiente);
+  row("Prioridad", d.prioridad);
+  row("Observaciones", d.obs);
+
+  if (d.photos && d.photos.length) {
+    head("Registro Fotográfico (" + d.photos.length + ")");
+    const colW = (W - M * 2 - 8) / 2;
+    const maxH = 65;
+    let col = 0;
+    let rowMaxH = 0;
+    let rowStartY = y;
+
     d.photos.forEach(ph => {
-      let w = 90, h = w * ph.h / ph.w;
-      if (h > 80) { h = 80; w = h * ph.w / ph.h; }
-      need(h + 4); p.addImage(ph.url, "JPEG", M, y, w, h); y += h + 4;
+      let phW = colW;
+      let phH = phW * ph.h / ph.w;
+      if (phH > maxH) {
+        phH = maxH;
+        phW = phH * ph.w / ph.h;
+      }
+      if (phH > rowMaxH) rowMaxH = phH;
+
+      if (col === 0) {
+        need(maxH + 6);
+        rowStartY = y;
+        const x = M + (colW - phW) / 2;
+        p.addImage(ph.url, "JPEG", x, rowStartY, phW, phH);
+        col = 1;
+      } else {
+        const x = M + colW + 8 + (colW - phW) / 2;
+        p.addImage(ph.url, "JPEG", x, rowStartY, phW, phH);
+        col = 0;
+        y = rowStartY + rowMaxH + 5;
+        rowMaxH = 0;
+      }
     });
+    if (col === 1) {
+      y = rowStartY + rowMaxH + 5;
+    }
   }
+
   return p.output("blob");
 }
 
-function save(file){
+function save(file) {
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(file); a.download = file.name;
-  document.body.appendChild(a); a.click(); a.remove();
+  const url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    a.remove();
+    URL.revokeObjectURL(url);
+  }, 2000);
 }
 
 $("#go").onclick = async () => {
-  const d = collect(), msg = $("#msg");
-  if (!d.id) { msg.textContent = "Falta el número del sticker."; $("#id").focus(); return; }
-  if (!window.jspdf) { msg.textContent = "No cargó el generador de PDF. Revisá la conexión y recargá la página."; return; }
+  const d = collect();
+  const msg = $("#msg");
+  msg.style.color = "var(--ink)";
+
+  if (!d.id) {
+    msg.textContent = "Falta el número del sticker.";
+    msg.style.color = "var(--err)";
+    $("#id").focus();
+    return;
+  }
+
+  const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFClass) {
+    msg.textContent = "Cargando motor PDF... intentá nuevamente en un segundo.";
+    msg.style.color = "var(--err)";
+    return;
+  }
+
   msg.textContent = "Generando PDF…";
   const name = d.id.replace(/[^A-Z0-9_-]/g, "-") + "_" + d.fecha + ".pdf";
   const file = new File([buildPdf(d)], name, { type: "application/pdf" });
-  if (SHEET_URL) fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...d, photos: d.photos.length }) }).catch(() => {});
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: d.id, text: "Revisión " + d.id }); msg.textContent = "Listo: " + name; }
-    catch (e) { if (e.name !== "AbortError") { save(file); msg.textContent = "Se descargó " + name; } else msg.textContent = "Envío cancelado. Podés volver a tocar el botón."; }
-  } else { save(file); msg.textContent = "Se descargó " + name + ". Adjuntalo en el grupo de WhatsApp."; }
+
+  if (SHEET_URL) {
+    fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ ...d, photos: d.photos.length })
+    }).catch(() => {});
+  }
+
+  let shared = false;
+  if (navigator.share) {
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: d.id,
+          text: "Revisión " + d.id
+        });
+        msg.textContent = "Listo: " + name;
+        msg.style.color = "var(--acc)";
+        shared = true;
+      }
+    } catch (e) {
+      if (e.name === "AbortError") {
+        msg.textContent = "Envío cancelado. Podés volver a tocar el botón.";
+        msg.style.color = "var(--mute)";
+        return;
+      }
+    }
+  }
+
+  if (!shared) {
+    save(file);
+    msg.textContent = "Se descargó " + name + ". Podés compartirlo en WhatsApp.";
+    msg.style.color = "var(--acc)";
+  }
 };
 
 $("#clr").onclick = () => {
-  ["#id","#ubi","#falla","#pend","#obs"].forEach(s => $(s).value = "");
-  document.querySelectorAll('input[type=radio]').forEach(r => { if (r.name !== "sector") r.checked = false; });
-  photos = []; thumbs(); $("#msg").textContent = ""; $("#fec").value = today(); $("#id").focus();
+  ["#id", "#ubi", "#falla", "#pend", "#obs"].forEach(s => $(s).value = "");
+  document.querySelectorAll('input[type=radio]').forEach(r => {
+    if (r.name !== "sector") r.checked = false;
+  });
+  photos = [];
+  thumbs();
+  $("#msg").textContent = "";
+  $("#fec").value = today();
+  $("#id").focus();
 };
 </script>
 </body>
