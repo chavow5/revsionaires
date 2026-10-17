@@ -102,7 +102,8 @@ h2 {
 label.f {
   display: block;
   margin: 12px 0 0;
-  color: var(--mute);
+  color: var(--acc);
+  font-weight: 600;
   font-size: 14px;
 }
 input[type=text], input[type=date], select, textarea {
@@ -117,6 +118,27 @@ input[type=text], input[type=date], select, textarea {
   border-radius: 10px;
   outline: none;
   transition: border-color .15s ease;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--mute);
+  opacity: 0.65;
+}
+
+/* Grilla de 2 columnas */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.grid-2 label.f {
+  margin: 0;
+}
+@media (max-width: 440px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 select {
   cursor: pointer;
@@ -235,20 +257,50 @@ textarea {
 }
 
 /* Fotos */
-.file {
-  display: block;
+.photo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 420px) {
+  .photo-actions {
+    grid-template-columns: 1fr;
+  }
+}
+.btn-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   text-align: center;
-  padding: 15px;
-  border: 2px dashed var(--line);
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 14px 10px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
   cursor: pointer;
   background: var(--card);
   color: var(--ink);
-  transition: border-color .15s ease;
+  transition: all .15s ease;
+  user-select: none;
 }
-.file:active, .file:hover {
+.btn-photo:active {
+  transform: scale(0.98);
+}
+.btn-photo-cam {
   border-color: var(--acc);
+  background: rgba(76, 195, 224, 0.12);
+  color: var(--acc);
+}
+.btn-photo-cam:hover, .btn-photo-cam:active {
+  background: rgba(76, 195, 224, 0.22);
+}
+.btn-photo-gal {
+  border-color: var(--line);
+}
+.btn-photo-gal:hover, .btn-photo-gal:active {
+  border-color: var(--mute);
+  color: #fff;
 }
 #th {
   display: flex;
@@ -422,50 +474,54 @@ button:active {
   <p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
 
   <h2>Datos del Equipo</h2>
-  <label class="f">
-    Tipo de Equipo
-    <select id="tipo_equipo">
-      <option value="Split Muro">Split Muro</option>
-      <option value="Piso Techo">Piso Techo</option>
-      <option value="Cassette">Cassette</option>
-      <option value="Central / Ducto">Central / Ducto</option>
-      <option value="Ventana">Ventana</option>
-      <option value="Rooftop">Rooftop</option>
-      <option value="Otro">Otro</option>
-    </select>
-  </label>
+  <div class="grid-2" style="margin-top: 0;">
+    <label class="f">
+      Tipo de Equipo
+      <select id="tipo_equipo">
+        <option value="Split Muro">Split Muro</option>
+        <option value="Piso Techo">Piso Techo</option>
+        <option value="Cassette">Cassette</option>
+        <option value="Central / Ducto">Central / Ducto</option>
+        <option value="Ventana">Ventana</option>
+        <option value="Rooftop">Rooftop</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </label>
 
-  <label class="f" style="margin-bottom:6px">Tecnología</label>
-  <div class="seg" id="tecno">
-    <label><input type="radio" name="tecno" value="On / Off" checked><span>On / Off</span></label>
-    <label><input type="radio" name="tecno" value="Inverter"><span>Inverter</span></label>
+    <div>
+      <label class="f" style="margin-bottom:6px">Tecnología</label>
+      <div class="seg" id="tecno">
+        <label><input type="radio" name="tecno" value="On / Off" checked><span>On / Off</span></label>
+        <label><input type="radio" name="tecno" value="Inverter"><span>Inverter</span></label>
+      </div>
+    </div>
   </div>
 
-  <h2>Ubicación</h2>
+  <div class="grid-2">
+    <label class="f">
+      Marca y Modelo
+      <input id="marca_modelo" type="text" placeholder="Ej: Samsung AR12">
+    </label>
+
+    <label class="f">
+      Frigorías / Capacidad
+      <input id="frigorias" type="text" placeholder="Ej: 3000 fg / 12000 BTU">
+    </label>
+
+    <label class="f">
+      Presión de Refrigerante / Tipo
+      <input id="presion_gas" type="text" placeholder="Ej: 120 PSI (R410a)">
+    </label>
+
+    <label class="f">
+      Ubicación (Sala / Ambiente)
+      <input id="ubi" type="text" placeholder="Ej: Nombre de la sala en la puerta" autocomplete="off">
+    </label>
+  </div>
+
+  <h2 style="margin-top: 22px;">Ubicación y Fecha</h2>
+  <label class="f" style="margin-bottom:6px">Sector escolar (opcional)</label>
   <div class="seg" id="sector"></div>
-  <label class="f">
-    Aula o lugar
-    <input id="ubi" type="text" list="lugares-comunes" placeholder="Ej.: Aula 3, Dirección, Sala de Profesores">
-    <datalist id="lugares-comunes">
-      <option value="Dirección">
-      <option value="Secretaría">
-      <option value="Sala de Profesores">
-      <option value="Biblioteca">
-      <option value="Laboratorio">
-      <option value="Comedor">
-      <option value="Gimnasio / SUM">
-      <option value="Aula 1">
-      <option value="Aula 2">
-      <option value="Aula 3">
-      <option value="Aula 4">
-      <option value="Aula 5">
-      <option value="Aula 6">
-      <option value="Aula 7">
-      <option value="Aula 8">
-      <option value="Aula 9">
-      <option value="Aula 10">
-    </datalist>
-  </label>
   <label class="f">Fecha<input id="fec" type="date"></label>
 
   <h2>Estado general</h2>
@@ -506,9 +562,18 @@ button:active {
   <label class="f">Observaciones<textarea id="obs" placeholder="Observaciones adicionales (opcional)"></textarea></label>
 
   <h2>Fotos</h2>
-  <label class="file">Sacar o elegir fotos<input id="fotos" type="file" accept="image/*" multiple hidden></label>
+  <div class="photo-actions">
+    <label class="btn-photo btn-photo-cam">
+      📷 Tomar foto (Cámara)
+      <input id="foto_camara" type="file" accept="image/*" capture="environment" hidden>
+    </label>
+    <label class="btn-photo btn-photo-gal">
+      🖼️ Subir de galería
+      <input id="foto_galeria" type="file" accept="image/*" multiple hidden>
+    </label>
+  </div>
   <div id="th"></div>
-  <p class="hint">Hasta 6 fotos. Tocá una para quitarla.</p>
+  <p class="hint">Hasta 6 fotos. Podés sacar directo con la cámara o elegir de tu galería. Tocá una foto para quitarla.</p>
 
   <button class="go" id="go" type="button">Generar PDF y compartir</button>
   <button class="alt" id="clr" type="button">Empezar otro aire</button>
@@ -572,15 +637,37 @@ $("#chk").innerHTML = ITEMS.map((t, i) => `
   <div class="ck">
     <span>${t}</span>
     <div class="seg">
-      ${["Si", "No", "N/A"].map((o, idx) => `
+      ${["Si", "No", "N/A"].map(o => `
         <label>
-          <input type="radio" name="c${i}" value="${o}" ${idx === 0 ? "checked" : ""}>
+          <input type="radio" name="c${i}" value="${o}">
           <span>${o}</span>
         </label>
       `).join("")}
     </div>
   </div>
 `).join("");
+
+// Permitir deseleccionar una opción del checklist al volver a tocarla
+let radioWasChecked = false;
+$("#chk").addEventListener("pointerdown", e => {
+  const label = e.target.closest("label");
+  if (!label) return;
+  const radio = label.querySelector('input[type="radio"]');
+  if (radio) {
+    radioWasChecked = radio.checked;
+  }
+});
+
+$("#chk").addEventListener("click", e => {
+  const label = e.target.closest("label");
+  if (!label) return;
+  const radio = label.querySelector('input[type="radio"]');
+  if (radio && radioWasChecked) {
+    radio.checked = false;
+    radioWasChecked = false;
+  }
+  saveDraft();
+});
 
 const val = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value || "—";
 const check = (n, v) => {
@@ -604,6 +691,11 @@ $("#id").onblur = e => {
 };
 
 if (q.get("sector")) check("sector", q.get("sector"));
+if (q.get("marca")) $("#marca_modelo").value = q.get("marca");
+if (q.get("modelo")) $("#marca_modelo").value = ($("#marca_modelo").value ? $("#marca_modelo").value + " " : "") + q.get("modelo");
+if (q.get("frigorias")) $("#frigorias").value = q.get("frigorias");
+if (q.get("presion")) $("#presion_gas").value = q.get("presion");
+if (q.get("ubi")) $("#ubi").value = q.get("ubi");
 $("#fec").value = today();
 
 // Recordar último técnico seleccionado
@@ -618,7 +710,124 @@ $("#tec").onchange = () => {
   try {
     localStorage.setItem("tec", $("#tec").value);
   } catch (e) {}
+  saveDraft();
 };
+
+// --- Persistencia Automática del Borrador (Evita perder datos al sacar fotos o salir) ---
+const DRAFT_KEY = "revision_draft_v1";
+
+function saveDraft() {
+  try {
+    const draft = {
+      id: $("#id") ? $("#id").value : "",
+      tecnico: $("#tec") ? $("#tec").value : "",
+      tipoEquipo: $("#tipo_equipo") ? $("#tipo_equipo").value : "",
+      tecnologia: (document.querySelector('input[name="tecno"]:checked') || {}).value || "",
+      marcaModelo: $("#marca_modelo") ? $("#marca_modelo").value : "",
+      frigorias: $("#frigorias") ? $("#frigorias").value : "",
+      presionGas: $("#presion_gas") ? $("#presion_gas").value : "",
+      sector: (document.querySelector('input[name="sector"]:checked') || {}).value || "",
+      ubicacion: $("#ubi") ? $("#ubi").value : "",
+      fecha: $("#fec") ? $("#fec").value : "",
+      estado: (document.querySelector('input[name="estado"]:checked') || {}).value || "",
+      items: ITEMS.map((_, i) => (document.querySelector(`input[name="c${i}"]:checked`) || {}).value || ""),
+      falla: $("#falla") ? $("#falla").value : "",
+      pendiente: $("#pend") ? $("#pend").value : "",
+      prioridad: (document.querySelector('input[name="prio"]:checked') || {}).value || "",
+      obs: $("#obs") ? $("#obs").value : "",
+      photos: photos || []
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch (e) {
+    // Si la cuota de localStorage se llena con fotos, guardar al menos todo el texto y checklist
+    try {
+      const draft = {
+        id: $("#id") ? $("#id").value : "",
+        tecnico: $("#tec") ? $("#tec").value : "",
+        tipoEquipo: $("#tipo_equipo") ? $("#tipo_equipo").value : "",
+        tecnologia: (document.querySelector('input[name="tecno"]:checked') || {}).value || "",
+        marcaModelo: $("#marca_modelo") ? $("#marca_modelo").value : "",
+        frigorias: $("#frigorias") ? $("#frigorias").value : "",
+        presionGas: $("#presion_gas") ? $("#presion_gas").value : "",
+        sector: (document.querySelector('input[name="sector"]:checked') || {}).value || "",
+        ubicacion: $("#ubi") ? $("#ubi").value : "",
+        fecha: $("#fec") ? $("#fec").value : "",
+        estado: (document.querySelector('input[name="estado"]:checked') || {}).value || "",
+        items: ITEMS.map((_, i) => (document.querySelector(`input[name="c${i}"]:checked`) || {}).value || ""),
+        falla: $("#falla") ? $("#falla").value : "",
+        pendiente: $("#pend") ? $("#pend").value : "",
+        prioridad: (document.querySelector('input[name="prio"]:checked') || {}).value || "",
+        obs: $("#obs") ? $("#obs").value : "",
+        photos: []
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch (e2) {}
+  }
+}
+
+function restoreDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (!d) return;
+
+    if (d.id && !q.get("id")) $("#id").value = d.id;
+    if (d.tecnico) $("#tec").value = d.tecnico;
+    if (d.tipoEquipo) $("#tipo_equipo").value = d.tipoEquipo;
+    if (d.tecnologia) check("tecno", d.tecnologia);
+    if (d.marcaModelo) $("#marca_modelo").value = d.marcaModelo;
+    if (d.frigorias) $("#frigorias").value = d.frigorias;
+    if (d.presionGas) $("#presion_gas").value = d.presionGas;
+    if (d.sector && !q.get("sector")) check("sector", d.sector);
+    if (d.ubicacion) $("#ubi").value = d.ubicacion;
+    if (d.fecha) $("#fec").value = d.fecha;
+    if (d.estado) check("estado", d.estado);
+
+    if (Array.isArray(d.items)) {
+      d.items.forEach((v, i) => {
+        if (v) check("c" + i, v);
+      });
+    }
+
+    if (d.falla) {
+      $("#falla").value = d.falla;
+      const parts = d.falla.split(",").map(p => p.trim());
+      document.querySelectorAll("#chips-falla .chip").forEach(c => {
+        if (parts.includes(c.dataset.val)) c.classList.add("active");
+      });
+    }
+
+    if (d.pendiente) {
+      $("#pend").value = d.pendiente;
+      const parts = d.pendiente.split(",").map(p => p.trim());
+      document.querySelectorAll("#chips-pend .chip").forEach(c => {
+        if (parts.includes(c.dataset.val)) c.classList.add("active");
+      });
+    }
+
+    if (d.prioridad) check("prio", d.prioridad);
+    if (d.obs) $("#obs").value = d.obs;
+
+    if (Array.isArray(d.photos) && d.photos.length) {
+      photos = d.photos;
+      thumbs();
+    }
+  } catch (e) {
+    console.warn("No se pudo restaurar borrador:", e);
+  }
+}
+
+// Restaurar borrador al iniciar
+restoreDraft();
+
+// Guardar borrador en tiempo real ante cualquier cambio y al salir de la pestaña
+$("main").addEventListener("input", saveDraft);
+$("main").addEventListener("change", saveDraft);
+window.addEventListener("pagehide", saveDraft);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveDraft();
+});
 
 // Helper para Chips de selección rápida
 function setupChips(containerSelector, textareaSelector) {
@@ -643,6 +852,7 @@ function setupChips(containerSelector, textareaSelector) {
         }
         ta.value = parts.join(", ");
       }
+      saveDraft();
     };
   });
 }
@@ -679,19 +889,47 @@ function thumbs() {
     im.onclick = () => {
       photos.splice(n, 1);
       thumbs();
+      saveDraft();
     };
     $("#th").appendChild(im);
   });
 }
 
-$("#fotos").onchange = async e => {
-  for (const f of e.target.files) {
-    if (photos.length >= 6) break;
+async function addPhotos(files) {
+  let count = 0;
+  for (const f of files) {
+    if (photos.length >= 6) {
+      const msg = $("#msg");
+      msg.textContent = "Límite alcanzado: máximo 6 fotos por equipo.";
+      msg.style.color = "var(--err)";
+      break;
+    }
     const imgData = await shrink(f);
-    if (imgData) photos.push(imgData);
+    if (imgData) {
+      photos.push(imgData);
+      count++;
+    }
+  }
+  if (count > 0) {
+    thumbs();
+    saveDraft();
+  }
+}
+
+// Botón de Cámara directa (Android / iOS)
+$("#foto_camara").onchange = async e => {
+  if (e.target.files && e.target.files.length) {
+    await addPhotos(e.target.files);
   }
   e.target.value = "";
-  thumbs();
+};
+
+// Botón de Galería / Archivos
+$("#foto_galeria").onchange = async e => {
+  if (e.target.files && e.target.files.length) {
+    await addPhotos(e.target.files);
+  }
+  e.target.value = "";
 };
 
 function collect() {
@@ -700,11 +938,14 @@ function collect() {
     tecnico: $("#tec").value.trim(),
     tipoEquipo: $("#tipo_equipo").value,
     tecnologia: val("tecno"),
+    marcaModelo: $("#marca_modelo").value.trim(),
+    frigorias: $("#frigorias").value.trim(),
+    presionGas: $("#presion_gas").value.trim(),
     sector: val("sector"),
     ubicacion: $("#ubi").value.trim(),
     fecha: $("#fec").value || today(),
     estado: val("estado"),
-    items: ITEMS.map((t, i) => [t, val("c" + i)]),
+    items: ITEMS.map((t, i) => [t, (document.querySelector(`input[name="c${i}"]:checked`) || {}).value || ""]),
     falla: $("#falla").value.trim(),
     pendiente: $("#pend").value.trim(),
     prioridad: val("prio"),
@@ -773,12 +1014,17 @@ function buildPdf(d) {
   row("Técnico a cargo", d.tecnico);
   row("Tipo de Equipo", d.tipoEquipo);
   row("Tecnología", d.tecnologia);
-  row("Sector", d.sector);
-  row("Ubicación / Aula", d.ubicacion);
+  row("Marca y Modelo", d.marcaModelo);
+  row("Frigorías / Capacidad", d.frigorias);
+  row("Presión / Refrigerante", d.presionGas);
+  row("Ubicación (Ambiente)", d.ubicacion);
+  if (d.sector && d.sector !== "—") {
+    row("Sector", d.sector);
+  }
   row("Estado general", d.estado);
 
   head("Control y Funcionamiento");
-  d.items.forEach(([k, v]) => row(k, v));
+  d.items.forEach(([k, v]) => row(k, v || "Sin verificar"));
 
   head("Diagnóstico y Tareas");
   row("Falla detectada", d.falla);
@@ -923,8 +1169,11 @@ $("#btn-cancel-modal").onclick = () => {
 
 $("#btn-confirm-modal").onclick = () => {
   modal.hidden = true;
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch (e) {}
   // Limpiar campos del equipo manteniendo el técnico seleccionado
-  ["#id", "#ubi", "#falla", "#pend", "#obs"].forEach(s => $(s).value = "");
+  ["#id", "#marca_modelo", "#frigorias", "#presion_gas", "#ubi", "#falla", "#pend", "#obs"].forEach(s => $(s).value = "");
   document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
   document.querySelectorAll('input[type=radio]').forEach(r => {
     if (r.name !== "sector" && r.name !== "tecno") {
@@ -934,7 +1183,7 @@ $("#btn-confirm-modal").onclick = () => {
   check("estado", "Funciona");
   check("prio", "Normal");
   check("tecno", "On / Off");
-  ITEMS.forEach((_, i) => check("c" + i, "Si"));
+  // Los ítems del checklist quedan sin marcar para no falsear respuestas
   photos = [];
   thumbs();
   $("#msg").textContent = "";
