@@ -14,6 +14,7 @@
   --acc: #4cc3e0;
   --accink: #06222b;
   --err: #ff6b6b;
+  --succ: #4cc3e0;
   color-scheme: dark;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -30,8 +31,41 @@ body {
 main {
   max-width: 540px;
   margin: 0 auto;
-  padding: 18px 16px 36px;
+  padding: 16px 16px 36px;
 }
+
+/* Pestañas de Navegación */
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: var(--card);
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.tab-btn {
+  flex: 1;
+  padding: 11px 8px;
+  background: transparent;
+  color: var(--mute);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab-btn.active {
+  background: var(--acc);
+  color: var(--accink);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 h1 {
   font-size: 20px;
   font-weight: 700;
@@ -354,12 +388,145 @@ button:active {
 .alt:hover {
   border-color: var(--mute);
 }
-#msg {
+#msg, #merge-msg {
   min-height: 24px;
   margin: 14px 0 0;
   font-weight: 600;
   font-size: 14px;
   text-align: center;
+}
+
+/* Estilos de la Pestaña UNIR PDFs */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px 16px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s ease;
+  margin-top: 12px;
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--acc);
+  background: rgba(76, 195, 224, 0.05);
+}
+.dropzone-icon {
+  font-size: 36px;
+}
+.dropzone-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+}
+.dropzone-sub {
+  font-size: 13px;
+  color: var(--mute);
+}
+.merge-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+.merge-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mute);
+}
+.btn-small {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+}
+.btn-small:hover {
+  border-color: var(--acc);
+}
+.pdf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 18px;
+}
+.pdf-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.pdf-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+.pdf-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.pdf-details {
+  min-width: 0;
+  overflow: hidden;
+}
+.pdf-name {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdf-meta {
+  font-size: 12px;
+  color: var(--mute);
+  margin-top: 2px;
+}
+.pdf-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.btn-icon:hover {
+  border-color: var(--acc);
+}
+.btn-icon.del:hover {
+  border-color: var(--err);
+  color: var(--err);
 }
 
 /* Modal de confirmación */
@@ -438,146 +605,189 @@ button:active {
 </head>
 <body>
 <main>
-  <h1>Revisión de aire acondicionado</h1>
-
-  <!-- Técnico arriba con selección -->
-  <label class="f" style="margin-top: 0; font-weight: 600; color: var(--ink); font-size: 15px;">
-    Técnico a cargo
-    <select id="tec">
-      <option value="">Seleccionar técnico...</option>
-      <option value="Chavo Ramirez">Chavo Ramirez</option>
-      <option value="David Ramirez">David Ramirez</option>
-      <option value="Ignacio Arias">Ignacio Arias</option>
-      <option value="Jorge Elizondo">Jorge Elizondo</option>
-      <option value="Jorge Isaac">Jorge Isaac</option>
-      <option value="Leandro Casas">Leandro Casas</option>
-      <option value="Martin Arias">Martin Arias</option>
-      <option value="Nacho Arias">Nacho Arias</option>
-      <option value="Pablo Cordoba">Pablo Cordoba</option>
-      <option value="Palo Arias">Palo Arias</option>
-      <option value="Paloma Arias">Paloma Arias</option>
-      <option value="Ramiro Paez">Ramiro Paez</option>
-      <option value="Yamil Diaz">Yamil Diaz</option>
-    </select>
-  </label>
-
-  <h2 style="border-top: none; padding-top: 4px; margin-top: 18px;">Identificación del equipo</h2>
-  <div class="plate">
-    <div class="plate-prefix">
-      <span>EL -</span>
-      <span>SF -</span>
-    </div>
-    <div class="plate-input-box">
-      <input id="id" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="001" autocomplete="off" aria-label="Número del sticker">
-    </div>
+  <!-- Barra de pestañas -->
+  <div class="nav-tabs">
+    <button type="button" class="tab-btn active" id="tab-form-btn">📝 Nueva Revisión</button>
+    <button type="button" class="tab-btn" id="tab-merge-btn">📎 Unir PDFs</button>
   </div>
-  <p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
 
-  <h2>Datos del Equipo</h2>
-  <div class="grid-2" style="margin-top: 0;">
-    <label class="f">
-      Tipo de Equipo
-      <select id="tipo_equipo">
-        <option value="Split Muro">Split Muro</option>
-        <option value="Piso Techo">Piso Techo</option>
-        <option value="Cassette">Cassette</option>
-        <option value="Central / Ducto">Central / Ducto</option>
-        <option value="Ventana">Ventana</option>
-        <option value="Rooftop">Rooftop</option>
-        <option value="Otro">Otro</option>
+  <!-- VISTA 1: FORMULARIO DE REVISIÓN -->
+  <div id="view-form">
+    <h1>Revisión de aire acondicionado</h1>
+
+    <!-- Técnico arriba con selección -->
+    <label class="f" style="margin-top: 0; font-weight: 600; color: var(--ink); font-size: 15px;">
+      Técnico a cargo
+      <select id="tec">
+        <option value="">Seleccionar técnico...</option>
+        <option value="Chavo Ramirez">Chavo Ramirez</option>
+        <option value="David Ramirez">David Ramirez</option>
+        <option value="Ignacio Arias">Ignacio Arias</option>
+        <option value="Jorge Elizondo">Jorge Elizondo</option>
+        <option value="Jorge Isaac">Jorge Isaac</option>
+        <option value="Leandro Casas">Leandro Casas</option>
+        <option value="Martin Arias">Martin Arias</option>
+        <option value="Nacho Arias">Nacho Arias</option>
+        <option value="Pablo Cordoba">Pablo Cordoba</option>
+        <option value="Palo Arias">Palo Arias</option>
+        <option value="Paloma Arias">Paloma Arias</option>
+        <option value="Ramiro Paez">Ramiro Paez</option>
+        <option value="Yamil Diaz">Yamil Diaz</option>
       </select>
     </label>
 
-    <div>
-      <label class="f" style="margin-bottom:6px">Tecnología</label>
-      <div class="seg" id="tecno">
-        <label><input type="radio" name="tecno" value="On / Off" checked><span>On / Off</span></label>
-        <label><input type="radio" name="tecno" value="Inverter"><span>Inverter</span></label>
+    <h2 style="border-top: none; padding-top: 4px; margin-top: 18px;">Identificación del equipo</h2>
+    <div class="plate">
+      <div class="plate-prefix">
+        <span>EL -</span>
+        <span>SF -</span>
+      </div>
+      <div class="plate-input-box">
+        <input id="id" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="001" autocomplete="off" aria-label="Número del sticker">
       </div>
     </div>
+    <p class="hint">Escribí solo el número del sticker (001, 002…) o escaneá el QR del equipo.</p>
+
+    <h2>Datos del Equipo</h2>
+    <div class="grid-2" style="margin-top: 0;">
+      <label class="f">
+        Tipo de Equipo
+        <select id="tipo_equipo">
+          <option value="Split Muro">Split Muro</option>
+          <option value="Piso Techo">Piso Techo</option>
+          <option value="Cassette">Cassette</option>
+          <option value="Central / Ducto">Central / Ducto</option>
+          <option value="Ventana">Ventana</option>
+          <option value="Rooftop">Rooftop</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </label>
+
+      <div>
+        <label class="f" style="margin-bottom:6px">Tecnología</label>
+        <div class="seg" id="tecno">
+          <label><input type="radio" name="tecno" value="On / Off" checked><span>On / Off</span></label>
+          <label><input type="radio" name="tecno" value="Inverter"><span>Inverter</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <label class="f">
+        Marca y Modelo
+        <input id="marca_modelo" type="text" placeholder="Ej: Samsung AR12">
+      </label>
+
+      <label class="f">
+        Frigorías / Capacidad
+        <input id="frigorias" type="text" placeholder="Ej: 3000 fg / 12000 BTU">
+      </label>
+
+      <label class="f">
+        Presión de Refrigerante / Tipo
+        <input id="presion_gas" type="text" placeholder="Ej: 120 PSI (R410a)">
+      </label>
+
+      <label class="f">
+        Ubicación (Sala / Ambiente)
+        <input id="ubi" type="text" placeholder="Ej: Nombre de la sala en la puerta" autocomplete="off">
+      </label>
+    </div>
+
+    <h2 style="margin-top: 22px;">Ubicación y Fecha</h2>
+    <label class="f" style="margin-bottom:6px">Sector escolar (opcional)</label>
+    <div class="seg" id="sector"></div>
+    <label class="f">Fecha<input id="fec" type="date"></label>
+
+    <h2>Estado general</h2>
+    <div class="seg" id="estado"></div>
+
+    <h2>Control</h2>
+    <div id="chk"></div>
+
+    <h2>Diagnóstico</h2>
+    <label class="f">Falla detectada</label>
+    <div class="chips" id="chips-falla">
+      <span class="chip" data-val="Sin fallas">Sin fallas</span>
+      <span class="chip" data-val="No enfría">No enfría</span>
+      <span class="chip" data-val="Falta gas">Falta gas</span>
+      <span class="chip" data-val="Pierde agua">Pierde agua</span>
+      <span class="chip" data-val="No enciende">No enciende</span>
+      <span class="chip" data-val="Ruido anormal">Ruido anormal</span>
+      <span class="chip" data-val="Filtros sucios">Filtros sucios</span>
+      <span class="chip" data-val="Falla en placa">Falla en placa</span>
+      <span class="chip" data-val="Capacitor agotado">Capacitor</span>
+    </div>
+    <textarea id="falla" placeholder="Seleccioná de arriba o escribí la falla"></textarea>
+
+    <label class="f">Trabajo pendiente y repuestos</label>
+    <div class="chips" id="chips-pend">
+      <span class="chip" data-val="Mantenimiento realizado">Mantenimiento OK</span>
+      <span class="chip" data-val="Carga de refrigerante">Carga de gas</span>
+      <span class="chip" data-val="Limpieza profunda">Limpieza profunda</span>
+      <span class="chip" data-val="Cambio de capacitor">Cambio de capacitor</span>
+      <span class="chip" data-val="Destapar desagote">Destapar desagote</span>
+      <span class="chip" data-val="Reparar placa electrónica">Reparar placa</span>
+      <span class="chip" data-val="Reemplazo control remoto">Control remoto</span>
+    </div>
+    <textarea id="pend" placeholder="Seleccioná de arriba o escribí las tareas / repuestos"></textarea>
+
+    <label class="f" style="margin-bottom:6px">Prioridad</label>
+    <div class="seg" id="prio"></div>
+    <label class="f">Observaciones<textarea id="obs" placeholder="Observaciones adicionales (opcional)"></textarea></label>
+
+    <h2>Fotos</h2>
+    <div class="photo-actions">
+      <label class="btn-photo btn-photo-cam">
+        📷 Tomar foto (Cámara)
+        <input id="foto_camara" type="file" accept="image/*" capture="environment" hidden>
+      </label>
+      <label class="btn-photo btn-photo-gal">
+        🖼️ Subir de galería
+        <input id="foto_galeria" type="file" accept="image/*" multiple hidden>
+      </label>
+    </div>
+    <div id="th"></div>
+    <p class="hint">Hasta 6 fotos. Podés sacar directo con la cámara o elegir de tu galería. Tocá una foto para quitarla.</p>
+
+    <button class="go" id="go" type="button">Generar PDF y compartir</button>
+    <button class="alt" id="clr" type="button">Empezar otro aire</button>
+    <p id="msg" role="status"></p>
   </div>
 
-  <div class="grid-2">
-    <label class="f">
-      Marca y Modelo
-      <input id="marca_modelo" type="text" placeholder="Ej: Samsung AR12">
+  <!-- VISTA 2: UNIR PDFs -->
+  <div id="view-merge" hidden>
+    <h1>Unir Reportes PDF</h1>
+    <p class="hint" style="margin-top:-6px; font-size:14px;">Subí los PDFs de las revisiones generadas para combinarlos en un único archivo consolidado.</p>
+
+    <label class="dropzone" id="dropzone" for="pdf-inputs">
+      <div class="dropzone-icon">📄</div>
+      <div class="dropzone-title">Tocar para elegir PDFs o arrastrarlos acá</div>
+      <div class="dropzone-sub">Podés seleccionar múltiples archivos a la vez</div>
+      <input type="file" id="pdf-inputs" accept="application/pdf" multiple hidden>
     </label>
 
-    <label class="f">
-      Frigorías / Capacidad
-      <input id="frigorias" type="text" placeholder="Ej: 3000 fg / 12000 BTU">
-    </label>
+    <div class="merge-toolbar" id="merge-toolbar" style="display: none;">
+      <span class="merge-count" id="merge-count">0 PDFs seleccionados</span>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn-small" id="btn-sort-pdfs">Ordenar A-Z</button>
+        <button type="button" class="btn-small" id="btn-clear-pdfs" style="color:var(--err)">Limpiar</button>
+      </div>
+    </div>
 
-    <label class="f">
-      Presión de Refrigerante / Tipo
-      <input id="presion_gas" type="text" placeholder="Ej: 120 PSI (R410a)">
-    </label>
+    <div class="pdf-list" id="pdf-list"></div>
 
-    <label class="f">
-      Ubicación (Sala / Ambiente)
-      <input id="ubi" type="text" placeholder="Ej: Nombre de la sala en la puerta" autocomplete="off">
-    </label>
+    <div id="merge-form-controls" style="display: none;">
+      <label class="f">
+        Nombre del archivo resultante
+        <input id="merge-filename" type="text" value="Revisiones_Completas_Aires.pdf" placeholder="Ej.: Reporte_General_Primaria.pdf">
+      </label>
+
+      <button class="go" id="btn-merge-action" type="button">📎 Unir PDFs y Descargar</button>
+    </div>
+
+    <p id="merge-msg" role="status"></p>
   </div>
-
-  <h2 style="margin-top: 22px;">Ubicación y Fecha</h2>
-  <label class="f" style="margin-bottom:6px">Sector escolar (opcional)</label>
-  <div class="seg" id="sector"></div>
-  <label class="f">Fecha<input id="fec" type="date"></label>
-
-  <h2>Estado general</h2>
-  <div class="seg" id="estado"></div>
-
-  <h2>Control</h2>
-  <div id="chk"></div>
-
-  <h2>Diagnóstico</h2>
-  <label class="f">Falla detectada</label>
-  <div class="chips" id="chips-falla">
-    <span class="chip" data-val="Sin fallas">Sin fallas</span>
-    <span class="chip" data-val="No enfría">No enfría</span>
-    <span class="chip" data-val="Falta gas">Falta gas</span>
-    <span class="chip" data-val="Pierde agua">Pierde agua</span>
-    <span class="chip" data-val="No enciende">No enciende</span>
-    <span class="chip" data-val="Ruido anormal">Ruido anormal</span>
-    <span class="chip" data-val="Filtros sucios">Filtros sucios</span>
-    <span class="chip" data-val="Falla en placa">Falla en placa</span>
-    <span class="chip" data-val="Capacitor agotado">Capacitor</span>
-  </div>
-  <textarea id="falla" placeholder="Seleccioná de arriba o escribí la falla"></textarea>
-
-  <label class="f">Trabajo pendiente y repuestos</label>
-  <div class="chips" id="chips-pend">
-    <span class="chip" data-val="Mantenimiento realizado">Mantenimiento OK</span>
-    <span class="chip" data-val="Carga de refrigerante">Carga de gas</span>
-    <span class="chip" data-val="Limpieza profunda">Limpieza profunda</span>
-    <span class="chip" data-val="Cambio de capacitor">Cambio de capacitor</span>
-    <span class="chip" data-val="Destapar desagote">Destapar desagote</span>
-    <span class="chip" data-val="Reparar placa electrónica">Reparar placa</span>
-    <span class="chip" data-val="Reemplazo control remoto">Control remoto</span>
-  </div>
-  <textarea id="pend" placeholder="Seleccioná de arriba o escribí las tareas / repuestos"></textarea>
-
-  <label class="f" style="margin-bottom:6px">Prioridad</label>
-  <div class="seg" id="prio"></div>
-  <label class="f">Observaciones<textarea id="obs" placeholder="Observaciones adicionales (opcional)"></textarea></label>
-
-  <h2>Fotos</h2>
-  <div class="photo-actions">
-    <label class="btn-photo btn-photo-cam">
-      📷 Tomar foto (Cámara)
-      <input id="foto_camara" type="file" accept="image/*" capture="environment" hidden>
-    </label>
-    <label class="btn-photo btn-photo-gal">
-      🖼️ Subir de galería
-      <input id="foto_galeria" type="file" accept="image/*" multiple hidden>
-    </label>
-  </div>
-  <div id="th"></div>
-  <p class="hint">Hasta 6 fotos. Podés sacar directo con la cámara o elegir de tu galería. Tocá una foto para quitarla.</p>
-
-  <button class="go" id="go" type="button">Generar PDF y compartir</button>
-  <button class="alt" id="clr" type="button">Empezar otro aire</button>
-  <p id="msg" role="status"></p>
 </main>
 
 <!-- Modal de confirmación para Empezar otro aire -->
@@ -593,13 +803,19 @@ button:active {
   </div>
 </div>
 
-<!-- jsPDF local y fallback a CDN -->
+<!-- Motores PDF locales y fallbacks a CDN -->
 <script src="jspdf.umd.min.js"></script>
+<script src="pdf-lib.min.js"></script>
 <script>
   if (!window.jspdf) {
     var s = document.createElement("script");
     s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
     document.head.appendChild(s);
+  }
+  if (!window.PDFLib) {
+    var s2 = document.createElement("script");
+    s2.src = "https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js";
+    document.head.appendChild(s2);
   }
 </script>
 
@@ -619,6 +835,26 @@ const ITEMS = [
 
 const $ = s => document.querySelector(s);
 let photos = [];
+
+// Manejo de Pestañas
+const tabFormBtn = $("#tab-form-btn");
+const tabMergeBtn = $("#tab-merge-btn");
+const viewForm = $("#view-form");
+const viewMerge = $("#view-merge");
+
+tabFormBtn.onclick = () => {
+  tabFormBtn.classList.add("active");
+  tabMergeBtn.classList.remove("active");
+  viewForm.hidden = false;
+  viewMerge.hidden = true;
+};
+
+tabMergeBtn.onclick = () => {
+  tabMergeBtn.classList.add("active");
+  tabFormBtn.classList.remove("active");
+  viewMerge.hidden = false;
+  viewForm.hidden = true;
+};
 
 function seg(box, name, opts, defaultIdx = -1) {
   $(box).innerHTML = opts.map((o, idx) => `
@@ -1189,6 +1425,208 @@ $("#btn-confirm-modal").onclick = () => {
   $("#msg").textContent = "";
   $("#fec").value = today();
   $("#id").focus();
+};
+
+/* ========================================================
+   LÓGICA DE UNIÓN DE PDFs (pdf-lib)
+   ======================================================== */
+let mergeList = [];
+
+const dropzone = $("#dropzone");
+const pdfInputs = $("#pdf-inputs");
+const pdfListContainer = $("#pdf-list");
+const mergeToolbar = $("#merge-toolbar");
+const mergeCount = $("#merge-count");
+const mergeControls = $("#merge-form-controls");
+const mergeMsg = $("#merge-msg");
+
+// Soporte Drag and Drop
+dropzone.ondragover = e => { e.preventDefault(); dropzone.classList.add("dragover"); };
+dropzone.ondragleave = () => { dropzone.classList.remove("dragover"); };
+dropzone.ondrop = e => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+  if (e.dataTransfer && e.dataTransfer.files) {
+    loadFiles(e.dataTransfer.files);
+  }
+};
+
+pdfInputs.onchange = e => {
+  if (e.target.files) {
+    loadFiles(e.target.files);
+  }
+  e.target.value = "";
+};
+
+async function loadFiles(fileList) {
+  const PDFLibClass = window.PDFLib;
+  mergeMsg.textContent = "Leyendo archivos...";
+  mergeMsg.style.color = "var(--ink)";
+
+  for (const f of Array.from(fileList)) {
+    if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) continue;
+    try {
+      const buffer = await f.arrayBuffer();
+      let pagesCount = 1;
+      if (PDFLibClass && PDFLibClass.PDFDocument) {
+        try {
+          const doc = await PDFLibClass.PDFDocument.load(buffer, { ignoreEncryption: true });
+          pagesCount = doc.getPageCount();
+        } catch (e) {}
+      }
+      mergeList.push({
+        id: Math.random().toString(36).slice(2),
+        name: f.name,
+        size: (f.size / 1024).toFixed(0) + " KB",
+        pages: pagesCount,
+        bytes: buffer
+      });
+    } catch (err) {
+      console.error("Error al leer:", f.name, err);
+    }
+  }
+
+  mergeMsg.textContent = "";
+  renderMergeList();
+}
+
+function renderMergeList() {
+  pdfListContainer.innerHTML = "";
+
+  if (mergeList.length === 0) {
+    mergeToolbar.style.display = "none";
+    mergeControls.style.display = "none";
+    return;
+  }
+
+  mergeToolbar.style.display = "flex";
+  mergeControls.style.display = "block";
+  mergeCount.textContent = `${mergeList.length} PDF${mergeList.length > 1 ? "s" : ""} cargado${mergeList.length > 1 ? "s" : ""}`;
+
+  mergeList.forEach((item, index) => {
+    const el = document.createElement("div");
+    el.className = "pdf-item";
+    el.innerHTML = `
+      <div class="pdf-info">
+        <span class="pdf-icon">📄</span>
+        <div class="pdf-details">
+          <div class="pdf-name" title="${item.name}">${item.name}</div>
+          <div class="pdf-meta">${item.pages} pág${item.pages > 1 ? "s" : ""} · ${item.size}</div>
+        </div>
+      </div>
+      <div class="pdf-actions">
+        <button type="button" class="btn-icon up-btn" title="Subir" ${index === 0 ? "disabled style='opacity:0.3;cursor:default'" : ""}>▲</button>
+        <button type="button" class="btn-icon down-btn" title="Bajar" ${index === mergeList.length - 1 ? "disabled style='opacity:0.3;cursor:default'" : ""}>▼</button>
+        <button type="button" class="btn-icon del del-btn" title="Quitar">✕</button>
+      </div>
+    `;
+
+    el.querySelector(".up-btn").onclick = () => {
+      if (index > 0) {
+        const temp = mergeList[index];
+        mergeList[index] = mergeList[index - 1];
+        mergeList[index - 1] = temp;
+        renderMergeList();
+      }
+    };
+
+    el.querySelector(".down-btn").onclick = () => {
+      if (index < mergeList.length - 1) {
+        const temp = mergeList[index];
+        mergeList[index] = mergeList[index + 1];
+        mergeList[index + 1] = temp;
+        renderMergeList();
+      }
+    };
+
+    el.querySelector(".del-btn").onclick = () => {
+      mergeList.splice(index, 1);
+      renderMergeList();
+    };
+
+    pdfListContainer.appendChild(el);
+  });
+}
+
+// Botón de ordenar A-Z (numérico inteligente: 001, 002, 010)
+$("#btn-sort-pdfs").onclick = () => {
+  mergeList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+  renderMergeList();
+};
+
+// Botón de limpiar lista
+$("#btn-clear-pdfs").onclick = () => {
+  mergeList = [];
+  renderMergeList();
+  mergeMsg.textContent = "";
+};
+
+// Acción de UNIR PDFs
+$("#btn-merge-action").onclick = async () => {
+  if (mergeList.length < 2) {
+    mergeMsg.textContent = "Por favor agregá al menos 2 archivos PDF para unir.";
+    mergeMsg.style.color = "var(--err)";
+    return;
+  }
+
+  const PDFLibClass = window.PDFLib;
+  if (!PDFLibClass || !PDFLibClass.PDFDocument) {
+    mergeMsg.textContent = "Cargando motor de unión de PDF... intentá nuevamente en un segundo.";
+    mergeMsg.style.color = "var(--err)";
+    return;
+  }
+
+  try {
+    mergeMsg.textContent = `Uniendo ${mergeList.length} archivos PDF…`;
+    mergeMsg.style.color = "var(--ink)";
+
+    const mergedPdf = await PDFLibClass.PDFDocument.create();
+
+    for (const item of mergeList) {
+      const srcDoc = await PDFLibClass.PDFDocument.load(item.bytes, { ignoreEncryption: true });
+      const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+      copiedPages.forEach(page => mergedPdf.addPage(page));
+    }
+
+    const mergedBytes = await mergedPdf.save();
+    let filename = $("#merge-filename").value.trim() || "Revisiones_Completas_Aires.pdf";
+    if (!filename.toLowerCase().endsWith(".pdf")) filename += ".pdf";
+
+    const blob = new Blob([mergedBytes], { type: "application/pdf" });
+    const file = new File([blob], filename, { type: "application/pdf" });
+
+    let shared = false;
+    if (navigator.share) {
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: filename,
+            text: "Reporte consolidado de revisiones de aires"
+          });
+          shared = true;
+          mergeMsg.textContent = "¡Listo! Archivo compartido: " + filename;
+          mergeMsg.style.color = "var(--succ)";
+        }
+      } catch (e) {
+        if (e.name === "AbortError") {
+          mergeMsg.textContent = "Envío cancelado.";
+          mergeMsg.style.color = "var(--mute)";
+          return;
+        }
+      }
+    }
+
+    if (!shared) {
+      save(file);
+      mergeMsg.textContent = `¡Listo! Se descargó ${filename} con ${mergedPdf.getPageCount()} páginas.`;
+      mergeMsg.style.color = "var(--succ)";
+    }
+  } catch (err) {
+    console.error("Error al unir PDFs:", err);
+    mergeMsg.textContent = "Hubo un error al unir los archivos: " + (err.message || "formato no soportado");
+    mergeMsg.style.color = "var(--err)";
+  }
 };
 </script>
 </body>
